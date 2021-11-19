@@ -27,7 +27,7 @@ POST /person
 PUT /person
 
     {
-      "id": "id"
+      "id": "id",
       "name": "Имя",     //Опционально
       "mail": "Почта"    //Опционально
     }
@@ -55,7 +55,7 @@ POST /book
 PUT /book/give
 
 {
-  "id":"id книги"
+  "id":"id книги",
   "ownerId": "id пользователя"
 }
 
