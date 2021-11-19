@@ -24,7 +24,7 @@ POST /person
 
 
 # Редактировать пользователя
-PUT /person/:id
+PUT /person
 
     {
       "id": "id"
