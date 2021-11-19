@@ -60,7 +60,7 @@ PUT /book/give
 }
 
 # Забрать книгу у пользователя
-PUT /book/back/:id
+PUT /book/back/:id           //id книги
 ```
 
 
