@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {Entity, Column, PrimaryGeneratedColumn, ManyToOne} from 'typeorm';
+import {Person} from "../person/person.entity";
 
 @Entity()
 export class Book {
@@ -14,4 +15,6 @@ export class Book {
     @Column({nullable: true})
     ownerId: number;
 
+    @ManyToOne(() => Person, owner => owner.books)
+    owner: Person;
 }

@@ -28,18 +28,15 @@ export class PersonController {
     }
 
     @Get(':id')
-    getUserInfo(@Param('id') id: ObjectID): Promise<Person> {
+    getUserInfo(@Param() id: ObjectID) {
+
         return  this.personService.getUserInfo(id);
     }
-
-
-
 
     @Delete(':id')
     deletePerson(@Param('id') id: ObjectID) {
        return this.personService.deletePerson(id);
     }
-
 
     @Put('sub/:id')
     giveSubUser(@Param('id') id: ObjectID ) {

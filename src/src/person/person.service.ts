@@ -1,19 +1,19 @@
 
 import { Injectable, Inject } from '@nestjs/common';
-import { Repository } from 'typeorm';
 import { Person } from './person.entity';
 import {CreatePersonDto} from "./dto/create-person.dto";
 import {EditPersonDto} from "./dto/edit-person.dto";
-import {Book} from "../book/book.entity";
+import {Repository} from "typeorm";
+
+
 
 @Injectable()
 export class PersonService {
     constructor(
         @Inject('PERSON_REPOSITORY')
-        private personRepository: Repository<Person>,
-
-
+        private personRepository: Repository<Person>
     ) {}
+
 
     //----------------------------------------------Method one - create user-----------------------------------------\\
     async addPerson(dto: CreatePersonDto): Promise<Person> {
@@ -41,15 +41,16 @@ export class PersonService {
      //--------------------------------------------------------------------------------------------------------------\\
     // -------------------------------------------Method five - list of users-----------------------------------------\\
     async findAll(): Promise<Person[]> {
-        return this.personRepository.find();
+        return await this.personRepository.find();
     }
      //--------------------------------------------------------------------------------------------------------------\\
     //----------------------------------Method six - information about user and his books------------------------------------\\
     async getUserInfo(id) {
-        return await this.personRepository.findOne(id);
+       return await this.personRepository
+            .createQueryBuilder("owner").where(id)
+            .leftJoinAndSelect("owner.books", "book").getOne()
     }
     //--------------------------------------------------------------------------------------------------------------\\
-
 
 
 
