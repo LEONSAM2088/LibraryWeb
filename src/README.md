@@ -2,14 +2,10 @@
 ## Running the app
 
 ```bash
-# development
-$ npm run start
 
 # watch mode
-$ npm run start:dev
+$ nest start --watch
 
-# production mode
-$ npm run start:prod
 ```
 
 ## API
