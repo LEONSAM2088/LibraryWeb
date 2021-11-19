@@ -11,7 +11,7 @@ export class BookService {
     constructor(
         @Inject('BOOK_REPOSITORY')
         private bookRepository: Repository<Book>,
-        @Inject('BOOK_REPOSITORY')
+        @Inject('PERSON_REPOSITORY')
         private personRepository: Repository<Person>
     ) {}
 

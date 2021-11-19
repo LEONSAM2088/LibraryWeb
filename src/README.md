@@ -2,15 +2,17 @@
 ## Running the app
 
 ```bash
-# development
-$ npm run start
 
 # watch mode
-$ npm run start:dev
+$ nest start --watch
 
-# production mode
-$ npm run start:prod
 ```
+
+## Stack
+
+- database: postgresql
+- framework: nest js
+- ORM: TypeORM
 
 ## API
 ```bash
@@ -24,10 +26,10 @@ POST /person
 
 
 # Редактировать пользователя
-PUT /person/:id
+PUT /person
 
     {
-      "id": "id"
+      "id": "id",
       "name": "Имя",     //Опционально
       "mail": "Почта"    //Опционально
     }
@@ -55,14 +57,39 @@ POST /book
 PUT /book/give
 
 {
-  "id":"id книги"
+  "id":"id книги",
   "ownerId": "id пользователя"
 }
 
 # Забрать книгу у пользователя
-PUT /book/back/:id
+PUT /book/back/:id           //id книги
 ```
 
+## Settings
+
+Настройка подключения к БД:
+\src\database\database.providers.ts
+```typescript
+import { createConnection } from 'typeorm';
+
+export const databaseProviders = [
+    {
+        provide: 'DATABASE_CONNECTION',
+        useFactory: async () => await createConnection({
+            type: 'postgres',
+            host: 'localhost',
+            port: 5432,
+            username: 'username',
+            password: 'password',
+            database: 'dbname',
+            entities: [
+                __dirname + '/../**/*.entity{.ts,.js}',
+            ],
+            synchronize: true, //Отключить, если в продакш
+        }),
+    },
+];
+```
 
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest
