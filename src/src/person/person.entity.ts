@@ -12,6 +12,7 @@ export class Person {
     @Column()
     hasSub: boolean;
 
+
     @Column('text')
     mail: string;
 

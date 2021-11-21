@@ -1,11 +1,11 @@
 
 ## Running the app
 
-```bash
-
-# watch mode
-$ nest start --watch
-
+```json
+{
+  "start": "nest start",
+  "start:dev": "nest start --watch"
+}
 ```
 
 ## Stack
@@ -26,12 +26,12 @@ POST /person
 
 
 # Редактировать пользователя
-PUT /person
+PUT /person/:id
 
     {
-      "id": "id",
       "name": "Имя",     //Опционально
       "mail": "Почта"    //Опционально
+      "hasSub": false    //Опционально
     }
 
 # Удалить пользователя
@@ -43,7 +43,8 @@ PUT /person/sub/:id
 # Список пользователей
 GET /person
 
-# Получить информацию о пользователе и книгах, которые у него есть
+# Получить информацию о пользователе 
+# и книгах, которые у него есть
 GET /person/:id
 
 # Добавить книгу
@@ -54,10 +55,9 @@ POST /book
     }
 
 # Дать книгу пользователю
-PUT /book/give
+PUT /book/give/:id
 
 {
-  "id":"id книги",
   "ownerId": "id пользователя"
 }
 
@@ -66,30 +66,17 @@ PUT /book/back/:id           //id книги
 ```
 
 ## Settings
-
-Настройка подключения к БД:
-\src\database\database.providers.ts
-```typescript
-import { createConnection } from 'typeorm';
-
-export const databaseProviders = [
-    {
-        provide: 'DATABASE_CONNECTION',
-        useFactory: async () => await createConnection({
-            type: 'postgres',
-            host: 'localhost',
-            port: 5432,
-            username: 'username',
-            password: 'password',
-            database: 'dbname',
-            entities: [
-                __dirname + '/../**/*.entity{.ts,.js}',
-            ],
-            synchronize: true, //Отключить, если в продакш
-        }),
-    },
-];
+Настройка подключения в dotenv:
+LibraryWeb/.env
+```dotenv
+PORT=5000
+HOST=localhost
+DB_PORT=5432
+DB_PASSWORD=admin
+DB_NAME=Library
+DB_USERNAME=postgres
 ```
+
 
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest

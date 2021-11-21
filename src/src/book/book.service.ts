@@ -1,10 +1,10 @@
 
-import { Injectable, Inject } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import {Injectable, Inject} from '@nestjs/common';
+import {Repository, UpdateResult} from 'typeorm';
 import { Book } from './book.entity';
-import {CreateBookDto} from "./dto/create-book.dto";
-import {EditBookDto} from "./dto/edit-book.dto";
-import {Person} from "../person/person.entity";
+import { UpdateBookDto } from "./dto/update-book.dto";
+import { Person } from "../person/person.entity";
+import {ApiError} from "../ApiError/ApiError";
 
 @Injectable()
 export class BookService {
@@ -16,22 +16,26 @@ export class BookService {
     ) {}
 
     //----------------------------------------------Method seven - create book-----------------------------------------\\
-    async addBook(dto: CreateBookDto): Promise<Book> {
-        return await this.bookRepository.save({...dto, isUsed: false, ownerId: null});
+    async addBook(dto): Promise<Book> {
+
+        return await this.bookRepository.save({name: dto.name, isUsed: false, ownerId: null});
     }
      //--------------------------------------------------------------------------------------------------------------\\
     //--------------------------------------------Method eight - give book to the user------------------------------------------\\
-    async giveBook(dto: EditBookDto): Promise<EditBookDto> {
+    //If the user has a subscription AND has less than 5 books, AND the book is not used then give him book
+    async giveBook(dto: UpdateBookDto, id): Promise<UpdateResult> {
 
         const countBooks = await this.bookRepository.findAndCount({where: {ownerId: dto.ownerId}});
+        if(countBooks[1]>=5) ApiError.Forbidden_Error('Больше 5 книг давать нельзя!')
 
         const person = await this.personRepository.findOne(dto.ownerId);
+        if(!person.hasSub) ApiError.Payment_Error('Требуется абонимент!')
 
-        const book = await this.bookRepository.findOne(dto.id);
+        const book = await this.bookRepository.findOne(id);
+        if(book.isUsed) ApiError.Forbidden_Error('Книги нет в наличии!')
 
-        //If the user has a subscription AND has less than 5 books, AND the book is not used then give him book
-        if(!book.isUsed && countBooks[1]<5 && person.hasSub)
-            return await this.bookRepository.save({...dto, isUsed: true});
+        return await this.bookRepository.update({id: id.id}, {...dto, isUsed: true})
+
     }
      //--------------------------------------------------------------------------------------------------------------\\
     //--------------------------------------------Method nine - get back the book------------------------------------------\\

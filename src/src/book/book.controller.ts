@@ -1,8 +1,8 @@
 import {Body, Controller, Delete, Get, Param, Post, Put} from '@nestjs/common';
 import { BookService } from './book.service';
-import {CreateBookDto} from "./dto/create-book.dto";
-import {EditBookDto} from "./dto/edit-book.dto";
+import {UpdateBookDto} from "./dto/update-book.dto";
 import {ObjectID} from "typeorm";
+import {CreateBookDto} from "./dto/create-book.dto";
 
 
 
@@ -13,18 +13,19 @@ export class BookController {
 
 
     @Get()
-    ListBooks() {
+    getBooks() {
         return this.bookService.getBooks();
     }
 
     @Post()
     createBook(@Body() dto: CreateBookDto) {
+
         return this.bookService.addBook(dto);
     }
 
-    @Put('give')
-    giveBook(@Body() dto: EditBookDto) {
-        return this.bookService.giveBook(dto);
+    @Put('give/:id')
+    giveBook(@Body() dto: UpdateBookDto, @Param() id: ObjectID) {
+        return this.bookService.giveBook(dto, id);
     }
 
     @Delete(':id')

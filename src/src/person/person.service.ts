@@ -1,9 +1,10 @@
 
-import { Injectable, Inject } from '@nestjs/common';
+import {Injectable, Inject} from '@nestjs/common';
 import { Person } from './person.entity';
 import {CreatePersonDto} from "./dto/create-person.dto";
-import {EditPersonDto} from "./dto/edit-person.dto";
-import {Repository} from "typeorm";
+import {UpdatePersonDto} from "./dto/update-person.dto";
+import {Repository, UpdateResult} from "typeorm";
+import {ApiError} from "../ApiError/ApiError";
 
 
 
@@ -21,8 +22,8 @@ export class PersonService {
     }
      //--------------------------------------------------------------------------------------------------------------\\
     //-----------------------------------------------Method two - edit user-------------------------------------------\\
-    async editPerson(dto: EditPersonDto): Promise<EditPersonDto> {
-        return await this.personRepository.save(dto);
+    async editPerson(dto: UpdatePersonDto, id): Promise<UpdateResult> {
+        return await this.personRepository.update({id: id.id}, {...dto});
     }
      //--------------------------------------------------------------------------------------------------------------\\
     //--------------------------------------------Method three - delete user------------------------------------------\\
@@ -35,6 +36,9 @@ export class PersonService {
     //----------------------------------Method four - Give the user a subscription------------------------------------\\
     async giveSubUser(id) {
         const user = await this.personRepository.findOne(id);
+
+        if(user.hasSub) ApiError.Forbidden_Error('У пользователя уже есть абонимент!')
+
         user.hasSub = true;
         return await this.personRepository.manager.save(user);
     }

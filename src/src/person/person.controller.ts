@@ -3,7 +3,7 @@ import { PersonService } from './person.service';
 import { Person } from "./person.entity";
 import {ObjectID} from "typeorm";
 import {CreatePersonDto} from "./dto/create-person.dto";
-import {EditPersonDto} from "./dto/edit-person.dto";
+import {UpdatePersonDto} from "./dto/update-person.dto";
 
 
 
@@ -17,9 +17,9 @@ export class PersonController {
         return this.personService.addPerson(dto);
     }
 
-    @Put()
-    editPerson(@Body() dto: EditPersonDto) {
-        return this.personService.editPerson(dto);
+    @Put(':id')
+    editPerson(@Body() dto: UpdatePersonDto, @Param() id: ObjectID) {
+        return this.personService.editPerson(dto, id);
     }
 
     @Get()
