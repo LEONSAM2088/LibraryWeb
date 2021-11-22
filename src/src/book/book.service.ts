@@ -27,18 +27,18 @@ export class BookService {
         if(countBooks[1]>=5) ApiError.Forbidden_Error('Больше 5 книг давать нельзя!')
 
         const person = await this.personRepository.findOne(dto.ownerId);
-        if(person.hasSub===false) ApiError.Payment_Error('Требуется абонимент!')
+        if(person.hasSub===false) ApiError.Payment_Error('Требуется абонемент!')
 
         const book = await this.bookRepository.findOne(id);
         if(book.isUsed===true) ApiError.Forbidden_Error('Книги нет в наличии!')
 
-        return await this.bookRepository.update({id: id.id}, {...dto, isUsed: true})
+        return await this.bookRepository.update(id, {...dto, isUsed: true})
 
     }
      //--------------------------------------------------------------------------------------------------------------\\
     //--------------------------------------------Method nine - get back the book------------------------------------------\\
     async getBackBook(id): Promise<UpdateResult> {
-        return await this.bookRepository.update({id: id.id}, {isUsed: false, ownerId: null});
+        return await this.bookRepository.update(id, {isUsed: false, ownerId: null});
     }
     //--------------------------------------------------------------------------------------------------------------\\
 
@@ -47,7 +47,7 @@ export class BookService {
     }
 
     async deleteBook(id): Promise<DeleteResult> {
-        return await this.bookRepository.delete({id: id.id});
+        return await this.bookRepository.delete(id);
     }
 }
 

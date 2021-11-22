@@ -21,13 +21,13 @@ export class PersonService {
      //--------------------------------------------------------------------------------------------------------------\\
     //-----------------------------------------------Method two - edit user-------------------------------------------\\
     async editPerson(dto: UpdatePersonDto, id): Promise<UpdateResult> {
-        return await this.personRepository.update({id: id.id}, {...dto});
+        return await this.personRepository.update(id, {...dto});
     }
      //--------------------------------------------------------------------------------------------------------------\\
     //--------------------------------------------Method three - delete user------------------------------------------\\
     async deletePerson(id): Promise<DeleteResult> {
         try {
-            return await this.personRepository.delete({id: id});
+            return await this.personRepository.delete(id);
         }
         catch (e) {
             ApiError.Forbidden_Error(e.detail)
@@ -39,7 +39,7 @@ export class PersonService {
         const user = await this.personRepository.findOne(id);
 
         if(user.hasSub===true)
-            ApiError.Forbidden_Error('У пользователя уже есть абонимент!');
+            ApiError.Forbidden_Error('У пользователя уже есть абонемент!');
         user.hasSub = true;
         return await this.personRepository.manager.save(user);
     }
