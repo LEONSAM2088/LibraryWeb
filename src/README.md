@@ -67,7 +67,7 @@ PUT /book/back/:id           //id книги
 
 ## Settings
 Настройка подключения в dotenv:
-LibraryWeb/.env
+LibraryWeb/src/.env
 ```dotenv
 PORT=5000
 HOST=localhost
