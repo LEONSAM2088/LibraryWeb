@@ -1,10 +1,9 @@
-
-import {Injectable, Inject} from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { Person } from './person.entity';
-import {CreatePersonDto} from "./dto/create-person.dto";
-import {UpdatePersonDto} from "./dto/update-person.dto";
-import {Repository, UpdateResult} from "typeorm";
-import {ApiError} from "../ApiError/ApiError";
+import { CreatePersonDto } from "./dto/create-person.dto";
+import { UpdatePersonDto } from "./dto/update-person.dto";
+import { DeleteResult, Repository, UpdateResult } from "typeorm";
+import { ApiError } from "../ApiError/ApiError";
 
 
 
@@ -12,9 +11,8 @@ import {ApiError} from "../ApiError/ApiError";
 export class PersonService {
     constructor(
         @Inject('PERSON_REPOSITORY')
-        private personRepository: Repository<Person>
+        private readonly personRepository: Repository<Person>
     ) {}
-
 
     //----------------------------------------------Method one - create user-----------------------------------------\\
     async addPerson(dto: CreatePersonDto): Promise<Person> {
@@ -27,18 +25,21 @@ export class PersonService {
     }
      //--------------------------------------------------------------------------------------------------------------\\
     //--------------------------------------------Method three - delete user------------------------------------------\\
-    async deletePerson(id) {
-        const user = await this.personRepository.findOne(id);
-        await this.personRepository.manager.remove(user);
-
+    async deletePerson(id): Promise<DeleteResult> {
+        try {
+            return await this.personRepository.delete({id: id});
+        }
+        catch (e) {
+            ApiError.Forbidden_Error(e.detail)
+        }
     }
      //--------------------------------------------------------------------------------------------------------------\\
     //----------------------------------Method four - Give the user a subscription------------------------------------\\
     async giveSubUser(id) {
         const user = await this.personRepository.findOne(id);
 
-        if(user.hasSub) ApiError.Forbidden_Error('У пользователя уже есть абонимент!')
-
+        if(user.hasSub===true)
+            ApiError.Forbidden_Error('У пользователя уже есть абонимент!');
         user.hasSub = true;
         return await this.personRepository.manager.save(user);
     }
@@ -52,7 +53,7 @@ export class PersonService {
     async getUserInfo(id) {
        return await this.personRepository
             .createQueryBuilder("owner").where(id)
-            .leftJoinAndSelect("owner.books", "book").getOne()
+            .leftJoinAndSelect("owner.books", "book").getOne();
     }
     //--------------------------------------------------------------------------------------------------------------\\
 

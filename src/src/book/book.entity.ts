@@ -1,8 +1,9 @@
-import {Entity, Column, PrimaryGeneratedColumn, ManyToOne} from 'typeorm';
-import {Person} from "../person/person.entity";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Person } from "../person/person.entity";
 
 @Entity()
 export class Book {
+
     @PrimaryGeneratedColumn()
     id: number;
 
