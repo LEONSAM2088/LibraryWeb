@@ -23,16 +23,18 @@ export class BookService {
     //--------------------------------------------Method eight - give book to the user------------------------------------------\\
      async giveBook(dto: UpdateBookDto, id): Promise<UpdateResult> {
 
+        if(dto.ownerId==undefined) ApiError.Forbidden_Error('Id владельца не указан!');
+
         const countBooks = await this.bookRepository.findAndCount({where: {ownerId: dto.ownerId}});
-        if(countBooks[1]>=5) ApiError.Forbidden_Error('Больше 5 книг давать нельзя!')
+        if(countBooks[1]>=5) ApiError.Forbidden_Error('Больше 5 книг давать нельзя!');
 
         const person = await this.personRepository.findOne(dto.ownerId);
-        if(person.hasSub===false) ApiError.Payment_Error('Требуется абонемент!')
+        if(person.hasSub===false) ApiError.Payment_Error('Требуется абонемент!');
 
         const book = await this.bookRepository.findOne(id);
-        if(book.isUsed===true) ApiError.Forbidden_Error('Книги нет в наличии!')
+        if(book.isUsed===true) ApiError.Forbidden_Error('Книги нет в наличии!');
 
-        return await this.bookRepository.update(id, {...dto, isUsed: true})
+        return await this.bookRepository.update(id, {...dto, isUsed: true});
 
     }
      //--------------------------------------------------------------------------------------------------------------\\
